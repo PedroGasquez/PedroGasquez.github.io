@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedro Gasquez — Desenvolvedor Full Stack .NET</title>
+<meta name="description" content="Pedro Gasquez: desenvolvedor Full Stack .NET em Curitiba. C#, ASP.NET Core, PostgreSQL, Blazor e ferramentas para jogos. Veja projetos e entre em contato.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d131f;
+    --ink-2:#111a29;
+    --ink-3:#16223a;
+    --parchment:#e9e3d2;
+    --parchment-dim:#a9a293;
+    --brass:#c9a227;
+    --brass-soft:rgba(201,162,39,.12);
+    --teal:#4a7d74;
+    --hairline:rgba(201,162,39,.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--parchment);
+    font-family:'Sora',sans-serif;
+    font-weight:300;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--brass);color:var(--ink)}
+  a{color:inherit;text-decoration:none}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:2px}
+
+  /* ============ Layout: sidebar fixa + conteúdo rolável ============ */
+  .layout{
+    max-width:1240px;margin:0 auto;
+    display:grid;grid-template-columns:minmax(340px,42%) 1fr;
+    gap:0 60px;padding:0 40px;
+  }
+  .sidebar{
+    position:sticky;top:0;height:100vh;
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:88px 0 64px;
+  }
+  main{padding:88px 0 64px}
+
+  /* ============ Sidebar ============ */
+  .avail{
+    display:inline-flex;align-items:center;gap:8px;width:fit-content;
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.1em;
+    color:var(--teal);border:1px solid var(--teal);padding:5px 14px;margin-bottom:28px;
+  }
+  .avail .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  h1{
+    font-family:'Fraunces',serif;font-weight:600;
+    font-size:clamp(2.2rem,3.4vw,3rem);line-height:1.1;letter-spacing:-.01em;
+  }
+  .role{
+    font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:var(--brass);
+    margin-top:14px;letter-spacing:.04em;
+  }
+  .tagline{margin-top:20px;color:var(--parchment-dim);max-width:38ch;font-size:.98rem}
+  .now{
+    margin-top:26px;font-family:'IBM Plex Mono',monospace;font-size:.75rem;
+    color:var(--parchment-dim);border-left:2px solid var(--brass);padding-left:14px;line-height:1.9;
+  }
+  .now b{color:var(--parchment);font-weight:500}
+
+  .side-nav{list-style:none;margin-top:52px}
+  .side-nav a{
+    display:flex;align-items:center;gap:14px;padding:9px 0;
+    font-family:'IBM Plex Mono',monospace;font-size:.76rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--parchment-dim);
+  }
+  .side-nav a .line{height:1px;width:28px;background:var(--parchment-dim);transition:width .25s,background .25s}
+  .side-nav a:hover,.side-nav a.active{color:var(--parchment)}
+  .side-nav a:hover .line,.side-nav a.active .line{width:56px;background:var(--brass)}
+
+  .side-bottom{display:flex;flex-direction:column;gap:22px}
+  .socials{display:flex;gap:20px}
+  .socials a{
+    color:var(--parchment-dim);transition:color .2s,transform .2s;display:inline-flex;
+  }
+  .socials a:hover{color:var(--brass);transform:translateY(-2px)}
+  .socials svg{width:21px;height:21px;fill:currentColor}
+  .btn{
+    display:inline-block;width:fit-content;padding:12px 26px;border:1px solid var(--brass);
+    font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.08em;
+    color:var(--brass);transition:background .2s,color .2s;
+  }
+  .btn:hover{background:var(--brass);color:var(--ink)}
+
+  /* ============ Conteúdo ============ */
+  section{margin-bottom:110px;scroll-margin-top:88px}
+  .sec-label{
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--teal);margin-bottom:26px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .sec-label::before{content:"§";color:var(--brass)}
+  .sec-label::after{content:"";flex:1;height:1px;background:var(--hairline)}
+
+  #sobre p{color:var(--parchment-dim);max-width:60ch}
+  #sobre p+p{margin-top:16px}
+  #sobre strong{color:var(--parchment);font-weight:600}
+  #sobre em{color:var(--brass);font-style:normal}
+
+  /* ---- Projetos: lista com hover-dim ---- */
+  .projects{display:flex;flex-direction:column;gap:14px}
+  .projects:hover .proj:not(:hover){opacity:.45}
+  .proj{
+    display:grid;grid-template-columns:150px 1fr;gap:24px;
+    padding:24px;border:1px solid transparent;
+    transition:opacity .25s,background .25s,border-color .25s;
+  }
+  .proj:hover{background:var(--ink-2);border-color:var(--hairline);opacity:1}
+  .proj-thumb{
+    border:1px solid var(--hairline);height:96px;overflow:hidden;background:var(--ink-3);
+  }
+  .proj-thumb svg{width:100%;height:100%;display:block}
+  .proj h3{
+    font-family:'Fraunces',serif;font-weight:600;font-size:1.25rem;
+    display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  }
+  .proj h3 a{transition:color .2s}
+  .proj:hover h3 a{color:var(--brass)}
+  .proj h3 a .arrow{display:inline-block;transition:transform .2s;font-size:.85em}
+  .proj:hover h3 a .arrow{transform:translate(3px,-3px)}
+  .status{
+    font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);
+    padding:2px 9px;white-space:nowrap;
+  }
+  .status.active{color:var(--brass);border-color:var(--brass)}
+  .case{margin-top:12px;font-size:.9rem;color:var(--parchment-dim)}
+  .case dt{
+    font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--teal);margin-top:10px;
+  }
+  .case dt:first-child{margin-top:0}
+  .case dd{margin-top:2px;max-width:64ch}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .tags span{
+    font-family:'IBM Plex Mono',monospace;font-size:.68rem;
+    color:var(--brass);background:var(--brass-soft);padding:4px 12px;border-radius:99px;
+  }
+  .proj-links{
+    display:flex;gap:22px;margin-top:14px;
+    font-family:'IBM Plex Mono',monospace;font-size:.74rem;
+  }
+  .proj-links a{color:var(--parchment-dim);border-bottom:1px dashed var(--hairline);transition:color .2s}
+  .proj-links a:hover{color:var(--brass)}
+
+  /* ---- Experiência ---- */
+  .xp{display:flex;flex-direction:column;gap:6px}
+  .xp:hover .xp-item:not(:hover){opacity:.45}
+  .xp-item{
+    display:grid;grid-template-columns:150px 1fr;gap:24px;padding:22px 24px;
+    border:1px solid transparent;transition:opacity .25s,background .25s,border-color .25s;
+  }
+  .xp-item:hover{background:var(--ink-2);border-color:var(--hairline);opacity:1}
+  .xp-when{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.08em;color:var(--teal);padding-top:4px;text-transform:uppercase}
+  .xp-what b{color:var(--parchment);font-weight:600;font-size:1.02rem}
+  .xp-what p{color:var(--parchment-dim);font-size:.9rem;margin-top:6px;max-width:60ch}
+
+  /* ---- Stack ---- */
+  .stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+  .stack-col{border:1px solid var(--hairline);padding:24px;background:var(--ink-2)}
+  .stack-col h3{
+    font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.72rem;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin-bottom:14px;
+  }
+  .stack-col ul{list-style:none}
+  .stack-col li{padding:6px 0;color:var(--parchment-dim);font-size:.9rem;border-bottom:1px dashed rgba(233,227,210,.1)}
+  .stack-col li:last-child{border-bottom:none}
+  .stack-col li::before{content:"▸ ";color:var(--teal)}
+
+  /* ---- Contato ---- */
+  #contato h2{
+    font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.8rem,3vw,2.5rem);
+    margin-bottom:18px;letter-spacing:-.01em;
+  }
+  #contato p{color:var(--parchment-dim);max-width:52ch;margin-bottom:32px}
+  .contact-ctas{display:flex;gap:16px;flex-wrap:wrap}
+  .btn.solid{background:var(--brass);color:var(--ink)}
+  .btn.solid:hover{background:transparent;color:var(--brass)}
+
+  footer{
+    padding:40px 0 8px;font-family:'IBM Plex Mono',monospace;
+    font-size:.7rem;color:var(--parchment-dim);
+  }
+  footer span{color:var(--brass)}
+
+  /* ---- Reveal ---- */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+    .avail .dot{animation:none}
+  }
+
+  /* ---- Responsivo ---- */
+  @media (max-width:960px){
+    .layout{display:block;padding:0 24px}
+    .sidebar{position:static;height:auto;padding:64px 0 24px;gap:36px}
+    .side-nav{display:none}
+    main{padding:32px 0 48px}
+    .proj,.xp-item{grid-template-columns:1fr;gap:14px}
+    .proj-thumb{height:120px;max-width:340px}
+    section{margin-bottom:80px}
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div>
+      <div class="avail"><span class="dot"></span>Disponível para oportunidades</div>
+      <h1>Pedro Gasquez</h1>
+      <p class="role">Desenvolvedor Full Stack · .NET</p>
+      <p class="tagline">Construo software do banco de dados à interface — e ferramentas para os jogos que amo.</p>
+      <p class="now">Agora → construindo o <b>Steam Price Tracker v2</b><br>commits diários em <b>@PedroGasquez</b></p>
+
+      <ul class="side-nav" aria-label="Navegação de seções">
+        <li><a href="#sobre" class="active"><span class="line"></span>Sobre</a></li>
+        <li><a href="#projetos"><span class="line"></span>Projetos</a></li>
+        <li><a href="#experiencia"><span class="line"></span>Trajetória</a></li>
+        <li><a href="#stack"><span class="line"></span>Stack</a></li>
+        <li><a href="#contato"><span class="line"></span>Contato</a></li>
+      </ul>
+    </div>
+
+    <div class="side-bottom">
+      <div class="socials">
+        <a href="https://github.com/PedroGasquez" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.68.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.68.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/SEU-LINKEDIN" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+        </a>
+        <a href="mailto:seu-email@exemplo.com" aria-label="E-mail">
+          <svg viewBox="0 0 24 24"><path d="M2 4h20a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm1.5 2.7v11.3h17V6.7l-8.5 6.4L3.5 6.7zM4.9 6l7.1 5.3L19.1 6H4.9z"/></svg>
+        </a>
+      </div>
+      <a class="btn" href="#" download>Baixar currículo (PDF)</a>
+    </div>
+  </aside>
+
+  <!-- ============ CONTEÚDO ============ -->
+  <main>
+
+    <section id="sobre">
+      <p class="sec-label">Sobre</p>
+      <div class="reveal">
+        <p>Sou estudante de <strong>Engenharia de Software na UniCuritiba</strong> com experiência prática como desenvolvedor Full Stack. Meu terreno é o ecossistema <strong>.NET</strong> — C#, ASP.NET Core, Blazor, Entity Framework — com PostgreSQL e SQL Server na camada de dados, e Docker e GitHub Actions cuidando do resto.</p>
+        <p>Meus melhores projetos nascem da interseção entre <em>jogos e engenharia</em>: editor de mapas para Victoria 3, bot de Discord para sessões multiplayer, rastreador de preços da Steam. Cada um me forçou a aprender algo real — de flood-fill em canvas a políticas de resiliência com Polly.</p>
+        <p>Hoje meu foco é consistência: <strong>commits diários</strong>, documentação decente e arquitetura que se sustenta — não só código que funciona.</p>
+      </div>
+    </section>
+
+    <section id="projetos">
+      <p class="sec-label">Projetos em destaque</p>
+      <div class="projects">
+
+        <article class="proj reveal">
+          <div class="proj-thumb" aria-hidden="true">
+            <svg viewBox="0 0 150 96" xmlns="http://www.w3.org/2000/svg">
+              <rect width="150" height="96" fill="#16223a"/>
+              <polyline points="10,70 35,55 60,62 85,38 110,45 140,22" fill="none" stroke="#c9a227" stroke-width="2"/>
+              <polyline points="10,80 35,72 60,76 85,60 110,64 140,50" fill="none" stroke="#4a7d74" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <circle cx="85" cy="38" r="3" fill="#c9a227"/>
+              <text x="10" y="20" font-family="monospace" font-size="9" fill="#a9a293">R$ price/day</text>
+            </svg>
+          </div>
+          <div>
+            <h3><a href="https://github.com/PedroGasquez/steamchecks" target="_blank" rel="noopener">Steam Price Tracker v2 <span class="arrow">↗</span></a> <span class="status active">Em desenvolvimento</span></h3>
+            <dl class="case">
+              <dt>Problema</dt>
+              <dd>Preços na Steam mudam o tempo todo e não há histórico acessível para decidir a hora certa de comprar.</dd>
+              <dt>Solução</dt>
+              <dd>Worker service em .NET 9 que coleta preços da API da Steam com resiliência (Polly), persiste em PostgreSQL via EF Core e expõe tudo em uma API ASP.NET Core com frontend Blazor. Logging estruturado com Serilog, Docker e CI/CD com GitHub Actions.</dd>
+              <dt>Resultado</dt>
+              <dd>Evolução do v1 (serverless) para uma arquitetura de produção, construída em público com commits diários.</dd>
+            </dl>
+            <div class="tags">
+              <span>.NET 9</span><span>ASP.NET Core</span><span>PostgreSQL</span><span>EF Core</span><span>Blazor</span><span>Polly</span><span>Serilog</span><span>Docker</span><span>GitHub Actions</span>
+            </div>
+            <div class="proj-links">
+              <a href="https://github.com/PedroGasquez/steamchecks" target="_blank" rel="noopener">Código no GitHub</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="proj reveal">
+          <div class="proj-thumb" aria-hidden="true">
+            <svg viewBox="0 0 150 96" xmlns="http://www.w3.org/2000/svg">
+              <rect width="150" height="96" fill="#16223a"/>
+              <path d="M15,60 C25,40 45,35 55,45 C70,30 95,32 100,50 C120,45 135,55 130,70 C120,85 40,85 25,75 Z" fill="#4a7d74" fill-opacity=".5" stroke="#c9a227" stroke-width="1.5"/>
+              <path d="M55,45 C70,30 95,32 100,50 L 95,68 C70,72 60,60 55,45 Z" fill="#c9a227" fill-opacity=".45" stroke="#c9a227" stroke-width="1"/>
+              <text x="12" y="18" font-family="monospace" font-size="9" fill="#a9a293">definitions.csv</text>
+            </svg>
+          </div>
+          <div>
+            <h3>Atlas — Editor de Mapas para Victoria 3 <span class="status">Ferramenta</span></h3>
+            <dl class="case">
+              <dt>Problema</dt>
+              <dd>Editar províncias de Victoria 3 exige manipular arquivos e cores manualmente — lento e propenso a erros para modders.</dd>
+              <dt>Solução</dt>
+              <dd>Editor no navegador com pintura por flood-fill em canvas, exportação de definitions.csv compatível com o jogo e validador de mapas integrado. Zero backend, zero instalação.</dd>
+              <dt>Resultado</dt>
+              <dd>Fluxo de criação de mapas que levava horas passa a ser visual e imediato, direto no browser.</dd>
+            </dl>
+            <div class="tags">
+              <span>JavaScript</span><span>Canvas API</span><span>Flood-fill</span><span>CSV</span><span>Modding</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="proj reveal">
+          <div class="proj-thumb" aria-hidden="true">
+            <svg viewBox="0 0 150 96" xmlns="http://www.w3.org/2000/svg">
+              <rect width="150" height="96" fill="#16223a"/>
+              <rect x="12" y="14" width="86" height="14" rx="7" fill="#4a7d74" fill-opacity=".6"/>
+              <rect x="12" y="36" width="110" height="14" rx="7" fill="#c9a227" fill-opacity=".5"/>
+              <rect x="12" y="58" width="70" height="14" rx="7" fill="#4a7d74" fill-opacity=".6"/>
+              <circle cx="132" cy="21" r="6" fill="#c9a227"/>
+              <text x="12" y="90" font-family="monospace" font-size="9" fill="#a9a293">/sessao criar</text>
+            </svg>
+          </div>
+          <div>
+            <h3>Bot Discord — Victoria 3 Multiplayer <span class="status">Em arquitetura</span></h3>
+            <dl class="case">
+              <dt>Problema</dt>
+              <dd>Organizar sessões multiplayer de grand strategy no Discord é caótico: quem joga com qual nação, quando, e como visualizar isso.</dd>
+              <dt>Solução</dt>
+              <dd>Bot em discord.js com comandos para gerenciar jogadores por nação, agenda de sessões e geração dinâmica de mapas coloridos conforme a distribuição de países.</dd>
+              <dt>Resultado</dt>
+              <dd>Arquitetura definida; renderização de mapas em desenvolvimento.</dd>
+            </dl>
+            <div class="tags">
+              <span>Node.js</span><span>discord.js</span><span>Geração de imagens</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="proj reveal">
+          <div class="proj-thumb" aria-hidden="true">
+            <svg viewBox="0 0 150 96" xmlns="http://www.w3.org/2000/svg">
+              <rect width="150" height="96" fill="#16223a"/>
+              <g fill="none" stroke="#4a7d74" stroke-width="2">
+                <path d="M15,15 H135 M15,15 V81 M135,15 V45 M45,15 V55 M45,55 H105 M105,55 V81 M75,15 V35 M15,81 H75"/>
+              </g>
+              <path d="M20,76 H40 V60 H100 V76" fill="none" stroke="#c9a227" stroke-width="2" stroke-dasharray="4 3"/>
+              <circle cx="103" cy="76" r="4" fill="#c9a227"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Robô Solucionador de Labirintos <span class="status">Acadêmico</span></h3>
+            <dl class="case">
+              <dt>Problema</dt>
+              <dd>Navegar um labirinto físico de forma autônoma com hardware de baixo custo e sensores instáveis.</dd>
+              <dt>Solução</dt>
+              <dd>Arduino + Adafruit Motor Shield + 3 sensores IR, com calibração para estabilizar leituras e integração serial com Node-RED para dashboard de telemetria em tempo real.</dd>
+              <dt>Resultado</dt>
+              <dd>Robô funcional do hardware ao gráfico — depuração de fiação de motores, instabilidade de sensores e comunicação serial resolvidas.</dd>
+            </dl>
+            <div class="tags">
+              <span>Arduino</span><span>C++</span><span>Sensores IR</span><span>Node-RED</span><span>IoT</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section id="experiencia">
+      <p class="sec-label">Trajetória</p>
+      <div class="xp reveal">
+        <div class="xp-item">
+          <div class="xp-when">Atual</div>
+          <div class="xp-what">
+            <b>Desenvolvedor Full Stack</b>
+            <p>Desenvolvimento de aplicações web com C#, ASP.NET Core, Blazor, Entity Framework e SQL Server.</p>
+          </div>
+        </div>
+        <div class="xp-item">
+          <div class="xp-when">2026</div>
+          <div class="xp-what">
+            <b>Programa de Verão — LNCC</b>
+            <p>Laboratório Nacional de Computação Científica.</p>
+          </div>
+        </div>
+        <div class="xp-item">
+          <div class="xp-when">Em andamento</div>
+          <div class="xp-what">
+            <b>Bacharelado em Engenharia de Software — UniCuritiba</b>
+            <p>Com projetos práticos em automação industrial, IoT e desenvolvimento web.</p>
+          </div>
+        </div>
+        <div class="xp-item">
+          <div class="xp-when">Certificações</div>
+          <div class="xp-what">
+            <b>C#, Orientação a Objetos e Entity Framework</b>
+            <p>balta.io · Alura</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="stack">
+      <p class="sec-label">Stack</p>
+      <div class="stack-grid reveal">
+        <div class="stack-col">
+          <h3>Backend</h3>
+          <ul>
+            <li>C# / .NET 9</li>
+            <li>ASP.NET Core</li>
+            <li>Entity Framework Core</li>
+            <li>Worker Services</li>
+            <li>Polly · Serilog</li>
+          </ul>
+        </div>
+        <div class="stack-col">
+          <h3>Frontend</h3>
+          <ul>
+            <li>Blazor</li>
+            <li>HTML · CSS · JS</li>
+            <li>Canvas API</li>
+          </ul>
+        </div>
+        <div class="stack-col">
+          <h3>Dados & Infra</h3>
+          <ul>
+            <li>PostgreSQL</li>
+            <li>SQL Server</li>
+            <li>Docker</li>
+            <li>GitHub Actions</li>
+            <li>Git</li>
+          </ul>
+        </div>
+        <div class="stack-col">
+          <h3>Outros</h3>
+          <ul>
+            <li>Python · Java</li>
+            <li>Node.js / discord.js</li>
+            <li>Arduino · Node-RED</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="contato">
+      <p class="sec-label">Contato</p>
+      <div class="reveal">
+        <h2>Vamos construir algo?</h2>
+        <p>Estou aberto a oportunidades como desenvolvedor Full Stack .NET, estágios e colaborações em projetos open source. Respondo rápido.</p>
+        <div class="contact-ctas">
+          <a class="btn solid" href="mailto:seu-email@exemplo.com">Enviar e-mail</a>
+          <a class="btn" href="https://github.com/PedroGasquez" target="_blank" rel="noopener">GitHub ↗</a>
+          <a class="btn" href="https://www.linkedin.com/in/SEU-LINKEDIN" target="_blank" rel="noopener">LinkedIn ↗</a>
+        </div>
+      </div>
+      <footer>Pedro Gasquez · <span>§</span> feito à mão, sem templates · 2026</footer>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // Active section highlight in sidebar nav
+  const navLinks = document.querySelectorAll('.side-nav a');
+  const sections = [...navLinks].map(a=>document.querySelector(a.getAttribute('href')));
+  const spy = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+e.target.id));
+      }
+    });
+  },{rootMargin:'-40% 0px -55% 0px'});
+  sections.forEach(s=>s&&spy.observe(s));
+</script>
+
+</body>
+</html>
